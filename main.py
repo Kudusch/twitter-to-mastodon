@@ -45,6 +45,11 @@ def getTootDict(tweet_json):
         toot_dict['is_retweet'] = tweet_json['retweeted_status']['id']
     except:
         toot_dict['is_retweet'] = False
+
+    try:
+        toot_dict['is_reply'] = tweet_json['in_reply_to_status_id']
+    except:
+        toot_dict['is_reply'] = False
     
     try:
         imgs = []
@@ -90,7 +95,7 @@ class UserListener(tweepy.StreamListener):
         except:
             print("Could not extraxt toot_dict")
         
-        if toot_dict['is_retweet'] == False and toot_dict['user_id'] == '15872417':
+        if toot_dict['is_retweet'] == False and toot_dict['user_id'] == '15872417' and toot_dict['is_reply'] == False:
             try:
                 pprint(toot_dict)
                 tootMastodon(toot_dict['text'], media=toot_dict['media'])

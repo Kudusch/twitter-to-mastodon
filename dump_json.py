@@ -53,6 +53,11 @@ def getTootDict(tweet_json):
         toot_dict['is_retweet'] = tweet_json['retweeted_status']['id']
     except:
         toot_dict['is_retweet'] = False
+
+    try:
+        toot_dict['is_reply'] = tweet_json['in_reply_to_status_id']
+    except:
+        toot_dict['is_reply'] = False
     
     try:
         imgs = []
@@ -81,7 +86,7 @@ if input_id:
     tweet = api.get_status(input_id, tweet_mode='extended', include_ext_alt_text='true')
     tweet = tweet._json
     toot_dict = getTootDict(tweet)
-    #print(tweet)
+    print(tweet)
     pprint(toot_dict)
 else:
     tweets = api.user_timeline()[0:5]
