@@ -91,7 +91,6 @@ def tootMastodon(text, media=None):
 
 class UserListener(tweepy.StreamListener):
     def on_status(self, status):
-        toot_dict = getTootDict(status._json)
         try:
             toot_dict = getTootDict(status._json)
         except:
