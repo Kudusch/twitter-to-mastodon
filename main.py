@@ -6,6 +6,7 @@ import tweepy
 import requests
 from pprint import pprint
 import config as config
+import re
 
 mastodon = Mastodon(
     access_token = config.mastodon_tokens['access_token'],
@@ -90,6 +91,7 @@ def tootMastodon(text, media=None):
 
 class UserListener(tweepy.StreamListener):
     def on_status(self, status):
+        toot_dict = getTootDict(status._json)
         try:
             toot_dict = getTootDict(status._json)
         except:
