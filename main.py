@@ -31,23 +31,40 @@ def getTootDict(tweet_json):
         toot_dict['text'] = tweet_json['text']
 
     try:
+        urls = tweet_json['entities']['urls']
+        url_formated_text = toot_dict['text']
+        for url in urls:
+            url_formated_text = url['expanded_url'].join(url_formated_text.split(url['url']))
+        toot_dict['text'] = url_formated_text
+    except:
+        pass
+
+    toot_dict['text'] = re.sub(r"(@\w+)", r"\1@twitter.com", toot_dict['text'], 0, re.MULTILINE)
+
+    try:
         toot_dict['is_retweet'] = tweet_json['retweeted_status']['id']
     except:
         toot_dict['is_retweet'] = False
     
     try:
         imgs = []
+        media_formated_text = toot_dict['text']
         for img in tweet_json['extended_entities']['media']:
             img_dict = {}
             img_dict['url'] = img['media_url_https']
             img_dict['data'] = requests.get(img_dict['url']).content
+            
             try:
                 img_dict['description'] = img['description']
             except:
                 img_dict['description'] = None
 
+            media_formated_text = ''.join(media_formated_text.split(img['url']))
+            
             imgs.append(img_dict)
+       
         toot_dict['media'] = imgs
+        toot_dict['text'] = media_formated_text
     except:
         toot_dict['media'] = None
     return(toot_dict)
@@ -90,4 +107,3 @@ kuduschStream = tweepy.Stream(auth = api.auth, listener=userStream, tweet_mode='
 
 print("Ready to go!")
 kuduschStream.filter(follow = ["15872417"])
-#kuduschStream.filter(follow = ["100548484"])
