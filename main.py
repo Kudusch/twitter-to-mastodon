@@ -49,6 +49,8 @@ def getTootDict(tweet_json):
 
     try:
         toot_dict['is_reply'] = tweet_json['in_reply_to_status_id']
+        if toot_dict['is_reply'] == None:
+            toot_dict['is_reply'] = False
     except:
         toot_dict['is_reply'] = False
     
@@ -103,6 +105,9 @@ class UserListener(tweepy.StreamListener):
                 print("Tooted")
             except:
                 print("Something went wrong")
+        else:
+            print("Tweet not tootable!")
+            pprint([toot_dict['is_retweet'], toot_dict['user_id'], toot_dict['is_reply']])
 
     def on_error(self, status_code):
         if status_code == 420:

@@ -56,6 +56,8 @@ def getTootDict(tweet_json):
 
     try:
         toot_dict['is_reply'] = tweet_json['in_reply_to_status_id']
+        if toot_dict['is_reply'] == None:
+            toot_dict['is_reply'] = False
     except:
         toot_dict['is_reply'] = False
     
