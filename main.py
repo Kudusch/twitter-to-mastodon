@@ -65,7 +65,10 @@ def getTootDict(tweet_json):
             try:
                 img_dict['description'] = img['description']
             except:
-                img_dict['description'] = None
+                try:
+                    img_dict['ext_alt_text'] = img['description']
+                except:
+                    img_dict['description'] = None
 
             media_formated_text = ''.join(media_formated_text.split(img['url']))
             

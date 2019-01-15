@@ -68,9 +68,10 @@ def getTootDict(tweet_json):
             img_dict = {}
             img_dict['url'] = img['media_url_https']
             img_dict['data'] = requests.get(img_dict['url']).content
-            
+            img_dict['data'] = "<data>"
+
             try:
-                img_dict['description'] = img['description']
+                img_dict['description'] = img['ext_alt_text']
             except:
                 img_dict['description'] = None
 
@@ -88,10 +89,27 @@ if input_id:
     tweet = api.get_status(input_id, tweet_mode='extended', include_ext_alt_text='true')
     tweet = tweet._json
     toot_dict = getTootDict(tweet)
-    print(tweet)
-    pprint(toot_dict)
+    if toot_dict['is_retweet'] == False and toot_dict['user_id'] == '15872417' and toot_dict['is_reply'] == False:
+        try:
+            pprint(toot_dict)
+            print("Tooted")
+        except:
+            print("Something went wrong")
+    else:
+        print("Tweet not tootable!")
+        pprint([toot_dict['is_retweet'], toot_dict['user_id'], toot_dict['is_reply']])
 else:
-    tweets = api.user_timeline()[0:5]
+    tweets = api.user_timeline(tweet_mode='extended', include_ext_alt_text='true')[0:5]
     for tweet in tweets:
-        pprint(tweet._json)
+        tweet = tweet._json
+        toot_dict = getTootDict(tweet)
+        if toot_dict['is_retweet'] == False and toot_dict['user_id'] == '15872417' and toot_dict['is_reply'] == False:
+            try:
+                pprint(toot_dict)
+                print("Tooted")
+            except:
+                print("Something went wrong")
+        else:
+            print("Tweet not tootable!")
+            pprint([toot_dict['is_retweet'], toot_dict['user_id'], toot_dict['is_reply']])
         print("\n")
