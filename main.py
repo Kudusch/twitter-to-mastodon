@@ -61,14 +61,11 @@ def getTootDict(tweet_json):
             img_dict = {}
             img_dict['url'] = img['media_url_https']
             img_dict['data'] = requests.get(img_dict['url']).content
-            
+
             try:
-                img_dict['description'] = img['description']
+                img_dict['description'] = img['ext_alt_text']
             except:
-                try:
-                    img_dict['ext_alt_text'] = img['description']
-                except:
-                    img_dict['description'] = None
+                img_dict['description'] = None
 
             media_formated_text = ''.join(media_formated_text.split(img['url']))
             
