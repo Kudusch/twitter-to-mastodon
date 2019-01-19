@@ -47,4 +47,12 @@ userStream = UserListener()
 kuduschStream = tweepy.Stream(auth = api.auth, listener=userStream, tweet_mode='extended', include_ext_alt_text='true')
 
 print("Ready to go!")
-kuduschStream.filter(follow = ["15872417"])
+while True:
+    try:
+        kuduschStream.filter(follow = ["15872417"])
+    except:
+        print("Restarting")
+        pass
+    else:
+        print("Restarting")
+        break
