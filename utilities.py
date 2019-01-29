@@ -42,10 +42,18 @@ def getTootDict(tweet_json, debug=False):
         for img in tweet_json['extended_entities']['media']:
             img_dict = {}
             img_dict['url'] = img['media_url_https']
-            if debug == False:
-                img_dict['data'] = requests.get(img_dict['url']).content
-            else:
-                img_dict['data'] = ">>data<<"
+            
+            if img['type'] == 'photo':
+                img_dict['mime_type'] = 'image/jpeg'
+            elif img['type'] == 'animated_gif':
+                img_dict['mime_type'] = 'video/mp4'
+                img_dict['url'] = img['video_info']['variants'][0]['url']
+
+
+            img_dict['data'] = requests.get(img_dict['url']).content
+
+            if debug == True:
+                img_dict['data'] = "{}…".format(img_dict['data'][:20])
 
             try:
                 img_dict['description'] = img['ext_alt_text']
@@ -65,7 +73,7 @@ def getTootDict(tweet_json, debug=False):
 def uploadMediaMastodon(media, mastodon):
     id_list = []
     for m in media:
-        media_dict = mastodon.media_post(m['data'], mime_type="image/jpeg", description=m['description'], focus=None)
+        media_dict = mastodon.media_post(m['data'], mime_type=m['mime_type'], description=m['description'], focus=None)
         id_list.append(media_dict['id'])
     return(id_list)
 

@@ -25,12 +25,12 @@ class UserListener(tweepy.StreamListener):
     def on_status(self, status):
         try:
             toot_dict = getTootDict(status._json)
+            pprint(toot_dict)
         except:
             print("Could not extraxt toot_dict")
         
         if toot_dict['is_retweet'] == False and toot_dict['user_id'] == '15872417' and toot_dict['is_reply'] == False:
             try:
-                pprint(toot_dict)
                 tootMastodon(toot_dict['text'], media=toot_dict['media', mastodon])
                 print("Tooted")
             except:

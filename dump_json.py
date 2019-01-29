@@ -8,6 +8,7 @@ from utilities import *
 import config as config
 import tweepy
 
+debug_flag = True
 
 mastodon = Mastodon(
     access_token = config.mastodon_tokens['access_token'],
@@ -31,6 +32,7 @@ except:
 try:
     if sys.argv[2] == 'toot':
         toot_flag = True
+        debug_flag = False
     else:
         toot_flag = False
 except:
@@ -39,13 +41,13 @@ except:
 if input_id:
     tweet = api.get_status(input_id, tweet_mode='extended', include_ext_alt_text='true')
     tweet = tweet._json
-    toot_dict = getTootDict(tweet, debug = False)
+    toot_dict = getTootDict(tweet, debug = debug_flag)
+    pprint(tweet)
+    pprint(toot_dict)
     if toot_dict['is_retweet'] == False and toot_dict['user_id'] == '15872417' and toot_dict['is_reply'] == False:
-        tootMastodon(toot_dict['text'], media=toot_dict['media'], mastodon = mastodon)
         try:
-            pprint(toot_dict)
             if toot_flag == True:
-                #tootMastodon(toot_dict['text'], media=toot_dict['media'])
+                tootMastodon(toot_dict['text'], media=toot_dict['media'], mastodon = mastodon)
                 print("Tooted!")
         except:
             print("Something went wrong")
