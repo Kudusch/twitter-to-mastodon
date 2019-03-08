@@ -11,10 +11,17 @@ def getTootDict(tweet_json, debug=False):
     try:
         toot_dict['text'] = tweet_json['full_text']
     except:
-        toot_dict['text'] = tweet_json['text']
-
-    try:
-        urls = tweet_json['entities']['urls']
+        try:
+            toot_dict['text'] = tweet_json['extended_tweet']['full_text']
+        except:
+            toot_dict['text'] = tweet_json['text']
+    
+    try: 
+        try:
+            urls = tweet_json['extended_tweet']['entities']['urls']
+        except:
+            urls = tweet_json['entities']['urls']
+        
         url_formated_text = toot_dict['text']
         for url in urls:
             url_formated_text = url['expanded_url'].join(url_formated_text.split(url['url']))
@@ -39,7 +46,12 @@ def getTootDict(tweet_json, debug=False):
     try:
         imgs = []
         media_formated_text = toot_dict['text']
-        for img in tweet_json['extended_entities']['media']:
+        try:
+            imgs_json = tweet_json['extended_tweet']['entities']['media']
+        except:
+            imgs_json = tweet_json['extended_entities']['media']
+
+        for img in imgs_json:
             img_dict = {}
             img_dict['url'] = img['media_url_https']
             
@@ -58,7 +70,10 @@ def getTootDict(tweet_json, debug=False):
             try:
                 img_dict['description'] = img['ext_alt_text']
             except:
-                img_dict['description'] = None
+                try:
+                    img_dict['description'] = img['description']
+                except:
+                    img_dict['description'] = None
 
             media_formated_text = ''.join(media_formated_text.split(img['url']))
             

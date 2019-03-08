@@ -5,6 +5,7 @@ import config as config
 from utilities import *
 from mastodon import Mastodon
 import tweepy
+import time
 from pprint import pprint
 
 mastodon = Mastodon(
@@ -25,13 +26,12 @@ class UserListener(tweepy.StreamListener):
     def on_status(self, status):
         try:
             toot_dict = getTootDict(status._json)
-            pprint(toot_dict)
         except:
             print("Could not extraxt toot_dict")
         
         if toot_dict['is_retweet'] == False and toot_dict['user_id'] == '15872417' and toot_dict['is_reply'] == False:
             try:
-                tootMastodon(toot_dict['text'], media=toot_dict['media', mastodon])
+                tootMastodon(toot_dict['text'], mastodon, media=toot_dict['media'])
                 print("Tooted")
             except:
                 print("Something went wrong")
@@ -44,7 +44,7 @@ class UserListener(tweepy.StreamListener):
             return False
 
 userStream = UserListener()
-kuduschStream = tweepy.Stream(auth = api.auth, listener=userStream, tweet_mode='extended', include_ext_alt_text='true')
+kuduschStream = tweepy.Stream(auth=api.auth, listener=userStream, tweet_mode='extended', include_ext_alt_text='true')
 
 print("Ready to go!")
 while True:
@@ -52,7 +52,9 @@ while True:
         kuduschStream.filter(follow = ["15872417"])
     except:
         print("Restarting")
+        time.sleep(5)
         pass
     else:
         print("Restarting")
+        time.sleep(5)
         break
